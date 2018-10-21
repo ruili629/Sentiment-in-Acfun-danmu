@@ -1,0 +1,188 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1.将相同视频号的评论信息合并 （完成）
+
+Example 1:
+select
+    firstname,
+    lastname,
+    listagg(department, ',') within group (order by department) as departments
+from tbl_people
+group by
+    firstname,
+    lastname;
+
+###
+firstname	lastname	department
+Nic	Raboy	Engineering
+Maria	Campos	Emergency Room
+Nic	Raboy	Operations
+Nic	Raboy	Design
+
+	
+###	
+firstname	lastname	departments
+Nic	Raboy	Design,Engineering,Operations
+Maria	Campos	Emergency Room
+
+select
+    p.firstname,
+    p.lastname,
+    (select xmlagg(xmlelement(E, d.departmentname || ';')).extract('//text()') from tbl_departments d where d.person_id = p.person_id)
+from tbl_people p;
+
+Example 2:
+declare @T table(Response_ID int, Label varchar(50))
+insert into @T values
+(12147,          'It was not clear'),
+(12458,          'Did not Undersstand'),
+(12458,          'Was not resolved'),
+(12458,          'Did not communicate'),
+(12586,          'Spoke too fast'),
+(12587,          'Too slow')
+
+select T1.Response_ID,
+       stuff((select ','+T2.Label
+              from @T as T2
+              where T1.Response_ID = T2.Response_ID
+              for xml path(''), type).value('.', 'varchar(max)'), 1, 1, '') as Label
+from @T as T1
+group by T1.Response_ID
+
+
+
+2.将评论信息对应视频号把播放量等信息合并（完成）
+https://stackoverflow.com/questions/37437901/join-pyspark-dataframe-with-a-filter-of-itself-and-columns-with-same-name
+https://stackoverflow.com/questions/36132322/join-two-data-frames-select-all-columns-from-one-and-some-columns-from-the-othe
+3.根据因变量（播放量、香蕉等）与自变量文本（评论信息）建造情感分析器
+训练集与测试集
+
+
+4.情感分析器的使用：文本输入预测、对播放量影响预测 
+
+
+（1）（完成）
+#分词
+#TF-IDF
+#训练集与测试集
+预测的目标是播放量或者按播放量分开的0、1；
+
+（2）（完成）
+#将正面情感和负面情感分类
+（每一条评论都没有自己的打分，如何知道这是正面的情感？）
+##利用现有的中文情感库                                  ===》 
+##从电影评论中训练出新的库                              ===》 （完成）
+
+
+
+#Tokenization 完成）
+
+5.统计类
+#研究近一个月上传的最多的视频类别；
+#怎样算播放量大？
+#播放量较大的视频类别
+
+6.线性回归类
+#对特定词汇的统计-与因变量回归
+#改名；建立feature与prediction；
+
+n.可视化
+
+
+#改进：
+#更完整的情感分类库
+#
+
+# 利用现有的中文情感库评分
+7。完善数据的基本描述部分
+基本的数据概述
+要研究的部分：（本次研究单独深入评论文本的情感与三个因变量）
+#再爬取多一次进行匹配时发现少了的视频；
+
+
+# 是否可引入特定聚类的分析
+
+
+###报告环节
+
+#对模型每个指标的解读与结合实际背景的理解
+
+
+
+
+下一步要做的工作：
+1.可视化（！：勿轻易扩大分析维度，先关注情感分析与因变量的部分）
+	1.正向情感与负向情感分类的词云
+	2.按时间轴排序的正负向情感统计图
+		对一特定的视频
+		hour（完成）
+		date
+	3.聚类的气泡图（没想好
+2.模型的理解
+3.加入弹幕的文本；增加数据量
+3.加入新一段时段的文本数据
+4.同时进行报告的撰写
+
+
+
+
+
+
+爬虫程序改进：有些小于20条的评论除不尽，导致连第一页也没有爬
+
+
+
+
+~报告~
+作为视频站内成员：我想知道哪些视频的正面评价者比例较大可选择与其进行广告合作；哪些视频的负面评价比例极高，为不影响本站形象，选择对其进行禁播
+评论发布者在哪个时点发的评论收到消极回应更加可能；
+作为视频发布者：我想知道哪些视频类别更加受欢迎：播放量更多、收到正面评价更多；
+
+研究时点：人在不同时点（激素、心情等）会有所不同，影响自己评价的正面程度，
+
+
+~背景调查：
+网上视频发布者的广告合作；
+不同时点人的激素水平与心理状态；
+
+
+
+
+
+
+读有关情感分析、回归模型、决策树的文章；（目的：写前言、逻辑、解读指标）
+
+关于text analysis：
+
+
+关于generalized distribution:
+an exponential family is a set of probability distributions of a certain form, specified below. 
+This special form is chosen for mathematical convenience, based on some useful algebraic properties, 
+as well as for generality, as exponential families are in a sense very natural sets of distributions to consider.
+
+
+
+换成SVM模型运行一次
+爬新一轮数据
+完善date的图、完善sum score的图
+加上新数据
+
+
+#word cloud以后再算
